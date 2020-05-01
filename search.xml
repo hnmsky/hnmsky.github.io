@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>C语言宏的一些说明 C macro</title>
+    <url>/2016/03/04/C%E8%AF%AD%E8%A8%80%E5%AE%8F%E7%9A%84%E4%B8%80%E4%BA%9B%E8%AF%B4%E6%98%8E%20C%20macro/</url>
+    <content><![CDATA[<p><em>本文例子大多出自GCC的文档 <a href="https://gcc.gnu.org/onlinedocs/cpp/Macros.html" target="_blank" rel="noopener">GCC Macro Doc</a></em></p>
+<h2 id="Object-like-Macros"><a href="#Object-like-Macros" class="headerlink" title="Object-like Macros"></a>Object-like Macros</h2><p>Object-like marco 只会在使用时才会完全展开。</p>
+<pre><code>#define TABLESIZE BUFSIZE
+#define BUFSIZE 1024
+TABLESIZE
+  ==&gt; BUFSIZE
+  ==&gt; 1024</code></pre><p>##Function-like Macros</p>
+<p>function-like macro 只会在后面有 () 才会展开。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">void</span> <span class="title">foo</span><span class="params">(<span class="keyword">void</span>)</span></span>;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> foo() <span class="comment">/* optimized inline version */</span></span></span><br><span class="line">foo();</span><br><span class="line">funcptr = foo;</span><br></pre></td></tr></table></figure>
+
+<p>注意如果定义了宏 foo(), 而又想定义foo函数，可以采用下面的做法。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> foo() <span class="comment">//inline function here</span></span></span><br><span class="line"><span class="keyword">void</span> (foo)()</span><br><span class="line">&#123;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>加上()后就不会展开为宏了,在一些库中采用的就是这种方式。</p>
+<p>注意在定义function-like macro时， 宏的名字和()中间不能有空格,否则会被展开为下面这种形式。</p>
+<pre><code>#define foo ()    c_init()
+foo()
+     ==&gt; () c_init()()</code></pre><p>如果这样定义宏， 会传递2个参数 <em>array[x = y</em> 和 <em>x + 1]</em> 给宏，注意这个表达式中间有逗号。</p>
+<pre><code>macro (array[x = y, x + 1])</code></pre><p>如果想用 array[x = y, x + 1] 作为参数，可以这样写 array[(x = y, x + 1)]</p>
+<p>All arguments to a macro are completely macro-expanded before they are substituted into the macro body</p>
+<p>可以传递空的参数给宏，但是必须要有逗号。</p>
+<pre><code>#define min(a,b) ((a) &lt; (b) ? (a) : (b))
+min(, b)        ==&gt; ((   ) &lt; (b) ? (   ) : (b))
+min(a, )        ==&gt; ((a  ) &lt; ( ) ? (a  ) : ( ))
+min(,)          ==&gt; ((   ) &lt; ( ) ? (   ) : ( ))
+min((,),)       ==&gt; (((,)) &lt; ( ) ? ((,)) : ( ))
+
+min()      error--&gt; macro &quot;min&quot; requires 2 arguments, but only 1 given
+min(,,)    error--&gt; macro &quot;min&quot; passed 3 arguments, but takes just 2</code></pre><p>宏的参数如果是在字符串中，则不会被替换。</p>
+<pre><code>#define foo(x) x, &quot;x&quot;
+foo(bar)        ==&gt; bar, &quot;x&quot;</code></pre><h2 id="字符串化（stringification）"><a href="#字符串化（stringification）" class="headerlink" title="字符串化（stringification）"></a>字符串化（stringification）</h2><p>用#可以将参数字符串化，<br>可以看到参数 <em>x == 0</em> 没有被展开， 而是变成 “x == 0”</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> WARN_IF(EXP) \</span></span><br><span class="line"> <span class="keyword">do</span> &#123; <span class="keyword">if</span> (EXP) \</span><br><span class="line">         <span class="built_in">fprintf</span> (<span class="built_in">stderr</span>, <span class="string">"Warning: "</span> #EXP <span class="string">"\n"</span>); &#125; \</span><br><span class="line"> <span class="keyword">while</span> (<span class="number">0</span>)</span><br><span class="line"> WARN_IF (x == <span class="number">0</span>);</span><br><span class="line">      ==&gt; <span class="keyword">do</span> &#123; <span class="keyword">if</span> (x == <span class="number">0</span>)</span><br><span class="line">            <span class="built_in">fprintf</span> (<span class="built_in">stderr</span>, <span class="string">"Warning: "</span> <span class="string">"x == 0"</span> <span class="string">"\n"</span>); &#125; <span class="keyword">while</span> (<span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+
+<p>如果希望EXP被展开，需要用2层的宏， 可以看到在很多地方使用这个技巧。</p>
+<pre><code>#define xstr(s) str(s)
+#define str(s) #s
+#define foo 4
+str (foo)
+     ==&gt; &quot;foo&quot;
+xstr (foo)
+     ==&gt; xstr (4)
+     ==&gt; str (4)
+     ==&gt; &quot;4&quot;</code></pre><p>这里s在xstr中被展开， 这样在str中就是已展开的s。</p>
+<p>Token pasting is most useful when one or both of the tokens comes from a macro argument. If either of the tokens next to an ‘##’ is a parameter name, it is replaced by its actual argument before ‘##’ executes. As with stringification, the actual argument is not macro-expanded first. If the argument is empty, that ‘##’ has no effect.</p>
+<p> #define eprintf(…) fprintf (stderr, <strong>VA_ARGS</strong>)<br>The variable argument is completely macro-expanded before it is inserted into the macro expansion, just like an ordinary argument. You may use the ‘#’ and ‘##’ operators to stringify the variable argument or to paste its leading or trailing token with another token. (But see below for an important special case for ‘##’.)</p>
+<p>If your macro is complicated, you may want a more descriptive name for the variable argument than <strong>VA_ARGS</strong>. CPP permits this, as an extension. You may write an argument name immediately before the ‘…’; that name is used for the variable argument. The eprintf macro above could be written<br>     #define eprintf(args…) fprintf (stderr, args)</p>
+<p>using this extension. You cannot use <strong>VA_ARGS</strong> and this extension in the same macro.</p>
+<p>GNU CPP has a pair of extensions which deal with this problem. First, you are allowed to leave the variable argument out entirely:<br>     eprintf (“success!\n”)<br>          ==&gt; fprintf(stderr, “success!\n”, );</p>
+<p>Second, the ‘##’ token paste operator has a special meaning when placed between a comma and a variable argument. If you write<br>     #define eprintf(format, …) fprintf (stderr, format, ##<strong>VA_ARGS</strong>)</p>
+<p>and the variable argument is left out when the eprintf macro is used, then the comma before the ‘##’ will be deleted. This does not happen if you pass an empty argument, nor does it happen if the token preceding ‘##’ is anything other than a comma.<br>     eprintf (“success!\n”)<br>          ==&gt; fprintf(stderr, “success!\n”);</p>
+<p>revious versions of CPP implemented the comma-deletion extension much more generally. We have restricted it in this release to minimize the differences from C99. To get the same effect with both this and previous versions of GCC, the token preceding the special ‘##’ must be a comma, and there must be white space between that comma and whatever comes immediately before it:<br>     #define eprintf(format, args…) fprintf (stderr, format , ##args)</p>
+<p>However, if an identifier which is currently a macro is redefined, then the new definition must be effectively the same as the old one. Two macro definitions are effectively the same if:</p>
+<pre><code>* Both are the same type of macro (object- or function-like).
+* All the tokens of the replacement list are the same.
+* If there are any parameters, they are the same.
+* Whitespace appears in the same places in both. It need not be exactly the same amount of whitespace, though. Remember that comments count as whitespace.</code></pre><p>The C language offers no standard way to do this, but it can be done with GNU extensions as follows:<br>     #define min(X, Y)                <br>     ({ typeof (X) x_ = (X);          <br>        typeof (Y) y_ = (Y);          <br>        (x_ &lt; y_) ? x_ : y_; })</p>
+<p>The ‘({ … })’ notation produces a compound statement that acts as an expression. Its value is the value of its last statement. This permits us to define local variables and assign each argument to one. The local variables have underscores after their names to reduce the risk of conflict with an identifier of wider scope (it is impossible to avoid this entirely). Now each argument is evaluated exactly once.</p>
+<p>If a macro x expands to use a macro y, and the expansion of y refers to the macro x, that is an indirect self-reference of x. x is not expanded in this case either. Thus, if we have<br>     #define x (4 + y)<br>     #define y (2 * x)</p>
+<p>then x and y expand as follows:<br>     x    ==&gt; (4 + y)<br>          ==&gt; (4 + (2 * x))</p>
+<pre><code>y    ==&gt; (2 * x)
+     ==&gt; (2 * (4 + y))</code></pre><p>Each macro is expanded when it appears in the definition of the other macro, but not when it indirectly appears in its own definition.</p>
+<p>Argument Prescan<br>Macro arguments are completely macro-expanded before they are substituted into a macro body, unless they are stringified or pasted with other tokens. After substitution, the entire macro body, including the substituted arguments, is scanned again for macros to be expanded. The result is that the arguments are scanned twice to expand macro calls in them.</p>
+<p> #define AFTERX(x) X_ ## x<br>          #define XAFTERX(x) AFTERX(x)<br>          #define TABLESIZE 1024<br>          #define BUFSIZE TABLESIZE</p>
+<p>then AFTERX(BUFSIZE) expands to X_BUFSIZE, and XAFTERX(BUFSIZE) expands to X_1024. (Not to X_TABLESIZE. Prescan always does a complete expansion.)</p>
+]]></content>
+      <categories>
+        <category>code</category>
+      </categories>
+      <tags>
+        <tag>C</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>C数组和指针相关的问题</title>
+    <url>/2016/06/03/C%E6%95%B0%E7%BB%84%E5%92%8C%E6%8C%87%E9%92%88%E7%9B%B8%E5%85%B3%E7%9A%84%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<h2 id="两个面试题"><a href="#两个面试题" class="headerlink" title="两个面试题"></a>两个面试题</h2><p>面试时发现很多公司喜欢考一些数组和指针相关的问题。比较常见的是下面这个：  </p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* main.c */</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> a[<span class="number">4</span>] = &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>&#125;;</span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">void</span> <span class="title">foo</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	foo();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;	</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* foo.c */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">int</span> *a;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d \n"</span>, a[<span class="number">0</span>]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>问题是这段代码是否可以正常运行？</p>
+<p>最近还碰到个题目是这样的：  </p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> a[<span class="number">5</span>] = &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>&#125;;</span><br><span class="line"><span class="keyword">int</span> *p = &amp;a + <span class="number">1</span>;</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">"%d"</span>, *p);</span><br></pre></td></tr></table></figure>
+
+<p>这段代码的输出是什么？</p>
+<h2 id="在表达式中数组名字和指针的关系"><a href="#在表达式中数组名字和指针的关系" class="headerlink" title="在表达式中数组名字和指针的关系"></a>在表达式中数组名字和指针的关系</h2><p>要解决上面的两个问题，就要搞清数组名字和指针的关系。<br>在C中，大部分的表达式中数组名字的值就是数组第一个元素的地址，指针类型是和元素的类型一样，但是一个const的指针。<br>对于下面这种定义：  </p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> a[<span class="number">10</span>];</span><br><span class="line"><span class="keyword">int</span> *<span class="keyword">const</span> p;</span><br></pre></td></tr></table></figure>
+
+<p>a是一个整型的的const指针, 和p的类型是一样的。  </p>
+<p>作为函数参数时：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">func2</span><span class="params">( <span class="keyword">int</span> *p )</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">func2</span><span class="params">( <span class="keyword">int</span> a[] )</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>这两种声明也是等价的。 但绝不能认为数组名字和指针就是等价的。在表达式中有2个例外：  </p>
+<ul>
+<li>sizeof: sizeof(a) 的值是数组的大小 ，不是第一个元素指针的大小。</li>
+<li>&amp;操作符。 &amp;操作符返回的是第一个元素的地址，所以下面代码中三个printf输出的地址是一样的：<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> a[<span class="number">5</span>];</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">"%x\n"</span>, a);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">"%x\n"</span>, &amp;a[<span class="number">0</span>]);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">"%x\n"</span>, &amp;a);</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>但有意思的是上面代码中&amp;a的类型是 int (*)[5]，所以下面代码的输出是这样的：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> a[<span class="number">5</span>];</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">"%x\n"</span>, &amp;a);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">"%x\n"</span>, &amp;a + <span class="number">1</span>);</span><br><span class="line">----------------------------------</span><br><span class="line">output: <span class="number">2686740</span> </span><br><span class="line">        <span class="number">2686760</span></span><br></pre></td></tr></table></figure>
+
+<p>可以看到地址差了20个byte， 就是int a[5]所占用的空间。<br>所以上面第二个题目的答案是不确定，因为p这个指针已经越界了，不在数组a的范围内了。</p>
+<h2 id="编译器对于数组和指针的处理是不同的"><a href="#编译器对于数组和指针的处理是不同的" class="headerlink" title="编译器对于数组和指针的处理是不同的"></a>编译器对于数组和指针的处理是不同的</h2><p>对于第一个问题</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* main.c */</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> a[<span class="number">4</span>] = &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>&#125;;</span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">void</span> <span class="title">foo</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	foo();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;	</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* foo.c */</span></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">int</span> a[];</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> x;</span><br><span class="line">	x = a[<span class="number">0</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们来看下这段代码的汇编的代码：  </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">gcc -o ptr_test main.c foo.c</span><br><span class="line">objdump -d ptr_test</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">080483c8 &lt;foo&gt;:</span><br><span class="line"> 80483c8:	55                   	push   %ebp</span><br><span class="line"> 80483c9:	89 e5                	mov    %esp,%ebp</span><br><span class="line"> 80483cb:	83 ec 10             	sub    $0x10,%esp</span><br><span class="line"> 80483ce:	a1 18 a0 04 08       	mov    0x804a018,%eax</span><br><span class="line"> 80483d3:	89 45 fc             	mov    %eax,-0x4(%ebp)</span><br><span class="line"> 80483d6:	c9                   	leave  </span><br><span class="line"> 80483d7:	c3                   	ret</span><br></pre></td></tr></table></figure>
+
+<p>我们修改下foo.c</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* foo.c */</span></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">int</span> *a;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> x;</span><br><span class="line">	x = a[<span class="number">0</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后看下汇编代码：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">080483c8 &lt;foo&gt;:</span><br><span class="line">80483c8:	55                   	push   %ebp</span><br><span class="line">80483c9:	89 e5                	mov    %esp,%ebp</span><br><span class="line">80483cb:	83 ec 10             	sub    $0x10,%esp</span><br><span class="line">80483ce:	a1 18 a0 04 08       	mov    0x804a018,%eax</span><br><span class="line">80483d3:	8b 00                	mov    (%eax),%eax</span><br><span class="line">80483d5:	89 45 fc             	mov    %eax,-0x4(%ebp)</span><br><span class="line">80483d8:	c9                   	leave  </span><br><span class="line">80483d9:	c3                   	ret</span><br></pre></td></tr></table></figure>
+
+<p>可以发现不同的地方就是第二段代码多了 <strong>mov    (%eax),%eax</strong>。</p>
+<p>为什么会这样呢？  </p>
+<ol>
+<li>首先，在C语言中 数组下标 array[subscript] 等价于 *( array + ( subscript ) )。 也就是说编译器会将代码中a[0]转化为*(a + 0)也即是 *a， 所以代码中 x = a[0] 会变成 x = *a 。  </li>
+<li>上面汇编代码中 0x804a018 是全局数组a的地址。 <strong>mov    0x804a018,%eax</strong> 这句代码就是把地址0x804a018的数据放到寄存器eax中，在我们的代码中地址0x804a018的整型数据就是1。所以eax中的数值就是1。</li>
+</ol>
+<ul>
+<li>如果声明a为数组，*a的值就是eax中的值。 <strong>%eax,-0x4(%ebp)</strong>这就就是把*a的值赋给x。</li>
+<li>如果声明a为指针，程序为了获得*a的值，就要去地址a取值。<strong>mov    (%eax),%eax</strong>，这就是到eax中的值的地址去取整型数据，然后copy到eax中。 这就是一个取值的动作。因为eax中数据是1， 所以对这个地址取值是非法的，程序会终止。</li>
+</ul>
+<p>所以第一个问题就是因为编译器对数组和指针的处理是不同的。  </p>
+<ul>
+<li>对于数组a, 只会到a的地址取值，然后这个值就是*a的值,也就是1。<br>0x804a018<br>| 1 | 2 | 3 | 4 |</li>
+</ul>
+<ul>
+<li>对于指针a, 首先要到a的地址取值，这个值是指针a的值，也就是1。对于*a, 还要有个取值的动作，就是到地址为指针a的值的地方取值，所以就是到地址1去取值。<br>0x804a018<br>| 1 | 2 | 3 | 4 |<br>1<br>| ? | ? | ? | ? |</li>
+</ul>
+]]></content>
+      <categories>
+        <category>code</category>
+      </categories>
+      <tags>
+        <tag>C</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>const和指针的问题</title>
+    <url>/2016/06/27/const-and-pointer/</url>
+    <content><![CDATA[<h2 id="一个bug引起的"><a href="#一个bug引起的" class="headerlink" title="一个bug引起的"></a>一个bug引起的</h2><p>最近北京那边同事碰到了一个问题，找到我时说是已经搞了四五天， 说是软件发布在即十分紧急啥的。 出问题的代码大概是这个样子：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> SERVER_NAME <span class="meta-string">"www.foo.com"</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  ...</span><br><span class="line">  gethostbyname(SERVER_NAME);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这段代码就是要通过DNS查找主句IP地址，如果成功的话会有一个callback。 问题是一直都无法正确的获得IP地址。</p>
+<h2 id="const-和指针的一些说明"><a href="#const-和指针的一些说明" class="headerlink" title="const 和指针的一些说明"></a>const 和指针的一些说明</h2><p>一个很流行的面试题就是const int * p 和 int * const p的区别。 其实const int * 和 int const * 是一样的， 就是一个指向const int的指针。 而 int * const p表示一个指向int的const 指针。</p>
+<p>那么问题来了，有人会问可以通过指针来修改const 变量的值吗？</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">const</span> <span class="keyword">int</span> a = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">int</span> * p = (<span class="keyword">int</span> *)&amp;a;</span><br><span class="line">	*p = <span class="number">2</span>;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d %d\n"</span>, a, *p);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面的代码将没有用const int * 的指针， 而是用int * 的指针来强制改变a的值。 这段代码的结果是什么呢？ 其实这个要看编译器。</p>
+<p>对于gcc 结果会是</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">2 2</span><br></pre></td></tr></table></figure>
+
+<p>即const 变量a的值可以被改变。</p>
+<p>但如果用g++编译， 结果就是</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1 2</span><br></pre></td></tr></table></figure>
+
+<p>其实如果去看汇编的代码，会发现其实a的值还是被改变了，所以 * p的值会是2. 但C++编译器会把a的值直接替换为1， 而不是去a的地址取值， 所以a的值是1.</p>
+<p>但如果a是一个全局变量 或是静态变量 ，这段代码运行时会segmentation fault, 因为这时a是在只读的区域的，修改只读区域会使程序出错。 </p>
+<p>而前面的例子中a是一个局部变量，是在栈中分配的，所以是可以被修改的。</p>
+<h2 id="问题的原因"><a href="#问题的原因" class="headerlink" title="问题的原因"></a>问题的原因</h2><p>对于开始提到的那个bug， SERVER_NAME其实是一个字符串的指针，并且是在只读区，而我同事封装的这个函数gethostbyname()的参数需要是一个可读写的地址（因为一些底层硬件上的原因）。</p>
+<p>而偏偏这个程序所在的平台，虽然不可以通过指针去修改全局const变量 ，但程序不会crash。 所以同事可能没有去考虑这方面的问题。</p>
+<p>改成这样就一切正常了。 虽然不同编译器的行为有些不同， 但编程时最好不要通过指针去修改const的变量 。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line"> <span class="keyword">char</span> server_name[] = <span class="string">"www.foo.com"</span>;</span><br><span class="line"> ...</span><br><span class="line">  gethostbyname(server_name);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+]]></content>
+      <categories>
+        <category>C</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>leetcode题解(一)</title>
+    <url>/2016/03/04/leetcode%E9%A2%98%E8%A7%A3/</url>
+    <content><![CDATA[<p>最近在刷leetcode,topcoder上的题目，决定写一些笔记，加深一下印象吧。顺序就是从简单的开始。</p>
+<p><a href="https://leetcode.com/problems/nim-game/" target="_blank" rel="noopener">Nim Game</a></p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">canWinNim</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (n % <span class="number">4</span> == <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;  </span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>在n=1,2,3时会赢，n=4时会输。 但n&gt;4时，都可以转化为n&lt;=4的情况，所以取模即可。</p>
+<p><a href="https://leetcode.com/problems/add-digits/" target="_blank" rel="noopener">Add Digits</a> </p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">addDigits</span><span class="params">(<span class="keyword">int</span> num)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (num == <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> r = num % <span class="number">9</span>;</span><br><span class="line">        <span class="keyword">return</span> r == <span class="number">0</span> ? <span class="number">9</span> : r ;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>从1开始观察下就可发现,其实最后结果就是对9取模.</p>
+<p><a href="https://leetcode.com/problems/maximum-depth-of-binary-tree/" target="_blank" rel="noopener">Maximum Depth of Binary Tree</a> </p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">maxDepth</span><span class="params">(TreeNode* root)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (root == <span class="literal">NULL</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> num = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">int</span> left = maxDepth(root-&gt;left);</span><br><span class="line">        <span class="keyword">int</span> right = maxDepth(root-&gt;right);</span><br><span class="line">        <span class="keyword">int</span> add = left &gt; right ? left : right;</span><br><span class="line">        <span class="keyword">return</span> add + num;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line">``` </span><br><span class="line">用递归即可</span><br><span class="line"></span><br><span class="line">[Invert Binary Tree](https:<span class="comment">//leetcode.com/problems/invert-binary-tree/)</span></span><br><span class="line"></span><br><span class="line">递归版本</span><br><span class="line">``` cpp</span><br><span class="line">class Solution &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    TreeNode* invertTree(TreeNode* root) &#123;</span><br><span class="line">        <span class="keyword">if</span> (root == <span class="literal">NULL</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">        TreeNode* left = invertTree(root-&gt;left);</span><br><span class="line">        TreeNode* right = invertTree(root-&gt;right);</span><br><span class="line">        root-&gt;left = right;</span><br><span class="line">        root-&gt;right = left;</span><br><span class="line">        <span class="keyword">return</span> root;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>非递归版本,其实递归程序都可以用stack来改成非递归版本。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">TreeNode* <span class="title">invertTree</span><span class="params">(TreeNode* root)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (root == <span class="literal">NULL</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">        <span class="built_in">stack</span>&lt;TreeNode* &gt; st;</span><br><span class="line">        st.push(root);</span><br><span class="line">        TreeNode* node;</span><br><span class="line">        <span class="keyword">while</span> (!st.empty()) &#123;</span><br><span class="line">            node = st.top();</span><br><span class="line">            st.pop();</span><br><span class="line">            TreeNode* tmp = node-&gt;left;</span><br><span class="line">            node-&gt;left = node-&gt;right;</span><br><span class="line">            node-&gt;right = tmp;</span><br><span class="line">            <span class="keyword">if</span> (node-&gt;left)</span><br><span class="line">                st.push(node-&gt;left);</span><br><span class="line">            <span class="keyword">if</span> (node-&gt;right)</span><br><span class="line">                st.push(node-&gt;right);</span><br><span class="line">        </span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> root;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    bool containsDuplicate(vector&lt;int&gt;&amp; nums) &#123;</span><br><span class="line">        int size &#x3D; nums.size();</span><br><span class="line">        if (size &lt; 2) return false;</span><br><span class="line">        vector&lt;int&gt; aux(nums);</span><br><span class="line">        </span><br><span class="line">        return sort(nums, aux, 0, size - 1);</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    bool sort(vector&lt;int&gt;&amp; nums, vector&lt;int&gt;&amp; aux, int lo, int hi) &#123;</span><br><span class="line">        if (lo &gt;&#x3D; hi)</span><br><span class="line">            return false;</span><br><span class="line">        int mid &#x3D; lo + (hi - lo) &#x2F; 2;</span><br><span class="line">        if (sort(nums, aux, lo, mid) || sort(nums, aux, mid + 1, hi)) &#123;</span><br><span class="line">            return true;</span><br><span class="line">        &#125;</span><br><span class="line">        return merge(nums, aux, lo, mid, hi);</span><br><span class="line">    &#125;</span><br><span class="line">    bool merge(vector&lt;int&gt;&amp; nums, vector&lt;int&gt;&amp; aux, int lo, int mid, int hi) &#123;</span><br><span class="line">        </span><br><span class="line">        for (int i &#x3D; lo; i &lt;&#x3D; hi; ++i) &#123;</span><br><span class="line">            aux[i] &#x3D; nums[i];</span><br><span class="line">        &#125;</span><br><span class="line">        int i &#x3D; lo, j &#x3D; mid + 1;</span><br><span class="line">        for (int k &#x3D; lo; k &lt;&#x3D; hi; ++k) &#123;</span><br><span class="line">            if (i &gt; mid) nums[k] &#x3D; aux[j++];</span><br><span class="line">            else if (j &gt; hi) nums[k] &#x3D; aux[i++];</span><br><span class="line">            else if (aux[i] &#x3D;&#x3D; aux[j]) return true;</span><br><span class="line">            else if (aux[i] &lt; aux[j]) nums[k] &#x3D; aux[i++];</span><br><span class="line">            else nums[k] &#x3D; aux[j++];</span><br><span class="line">        &#125;</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    bool containsDuplicate(vector&lt;int&gt;&amp; nums) &#123;</span><br><span class="line">        int size &#x3D; nums.size();</span><br><span class="line">        &#x2F;&#x2F;if (size &lt; 2) return false;</span><br><span class="line">        vector&lt;int&gt; aux(nums);</span><br><span class="line">        </span><br><span class="line">        for (int sz &#x3D; 1; sz &lt; size; sz &#x3D; 2*sz) </span><br><span class="line">            for (int lo &#x3D; 0; lo &lt; size - sz; lo +&#x3D; sz + sz)</span><br><span class="line">                if (merge(nums, aux, lo, lo + sz - 1, min(lo + sz + sz -1, size - 1))) return true;</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    bool merge(vector&lt;int&gt;&amp; nums, vector&lt;int&gt;&amp; aux, int lo, int mid, int hi) &#123;</span><br><span class="line">        </span><br><span class="line">        for (int i &#x3D; lo; i &lt;&#x3D; hi; ++i) &#123;</span><br><span class="line">            aux[i] &#x3D; nums[i];</span><br><span class="line">        &#125;</span><br><span class="line">        int i &#x3D; lo, j &#x3D; mid + 1;</span><br><span class="line">        for (int k &#x3D; lo; k &lt;&#x3D; hi; ++k) &#123;</span><br><span class="line">            if (i &gt; mid) nums[k] &#x3D; aux[j++];</span><br><span class="line">            else if (j &gt; hi) nums[k] &#x3D; aux[i++];</span><br><span class="line">            else if (aux[i] &#x3D;&#x3D; aux[j]) return true;</span><br><span class="line">            else if (aux[i] &lt; aux[j]) nums[k] &#x3D; aux[i++];</span><br><span class="line">            else nums[k] &#x3D; aux[j++];</span><br><span class="line">        &#125;</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    ListNode* reverseList(ListNode* head) &#123;</span><br><span class="line">       ListNode *pre &#x3D; NULL;</span><br><span class="line">       ListNode *next;</span><br><span class="line">       </span><br><span class="line">       while(head) &#123;</span><br><span class="line">            next &#x3D; head-&gt;next;</span><br><span class="line">            head-&gt;next &#x3D; pre;</span><br><span class="line">            pre &#x3D; head;</span><br><span class="line">            head &#x3D; next;</span><br><span class="line">       &#125;</span><br><span class="line">       return pre;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+  </entry>
+</search>
