@@ -15,7 +15,7 @@ TABLESIZE
 
 <p>注意如果定义了宏 foo(), 而又想定义foo函数，可以采用下面的做法。</p>
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> foo() <span class="comment">//inline function here</span></span></span><br><span class="line"><span class="keyword">void</span> (foo)()</span><br><span class="line">&#123;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<a id="more"></a>
 <p>加上()后就不会展开为宏了,在一些库中采用的就是这种方式。</p>
 <p>注意在定义function-like macro时， 宏的名字和()中间不能有空格,否则会被展开为下面这种形式。</p>
 <pre><code>#define foo ()    c_init()
@@ -86,6 +86,7 @@ xstr (foo)
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> a[<span class="number">5</span>] = &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>&#125;;</span><br><span class="line"><span class="keyword">int</span> *p = &amp;a + <span class="number">1</span>;</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">"%d"</span>, *p);</span><br></pre></td></tr></table></figure>
 
 <p>这段代码的输出是什么？</p>
+<a id="more"></a>
 <h2 id="在表达式中数组名字和指针的关系"><a href="#在表达式中数组名字和指针的关系" class="headerlink" title="在表达式中数组名字和指针的关系"></a>在表达式中数组名字和指针的关系</h2><p>要解决上面的两个问题，就要搞清数组名字和指针的关系。<br>在C中，大部分的表达式中数组名字的值就是数组第一个元素的地址，指针类型是和元素的类型一样，但是一个const的指针。<br>对于下面这种定义：  </p>
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> a[<span class="number">10</span>];</span><br><span class="line"><span class="keyword">int</span> *<span class="keyword">const</span> p;</span><br></pre></td></tr></table></figure>
 
@@ -150,6 +151,7 @@ xstr (foo)
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> SERVER_NAME <span class="meta-string">"www.foo.com"</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  ...</span><br><span class="line">  gethostbyname(SERVER_NAME);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>这段代码就是要通过DNS查找主句IP地址，如果成功的话会有一个callback。 问题是一直都无法正确的获得IP地址。</p>
+<a id="more"></a>
 <h2 id="const-和指针的一些说明"><a href="#const-和指针的一些说明" class="headerlink" title="const 和指针的一些说明"></a>const 和指针的一些说明</h2><p>一个很流行的面试题就是const int * p 和 int * const p的区别。 其实const int * 和 int const * 是一样的， 就是一个指向const int的指针。 而 int * const p表示一个指向int的const 指针。</p>
 <p>那么问题来了，有人会问可以通过指针来修改const 变量的值吗？</p>
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">const</span> <span class="keyword">int</span> a = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">int</span> * p = (<span class="keyword">int</span> *)&amp;a;</span><br><span class="line">	*p = <span class="number">2</span>;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d %d\n"</span>, a, *p);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -183,6 +185,7 @@ xstr (foo)
 <p><a href="https://leetcode.com/problems/nim-game/" target="_blank" rel="noopener">Nim Game</a></p>
 <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">canWinNim</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (n % <span class="number">4</span> == <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;  </span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 <p>在n=1,2,3时会赢，n=4时会输。 但n&gt;4时，都可以转化为n&lt;=4的情况，所以取模即可。</p>
+<a id="more"></a>
 <p><a href="https://leetcode.com/problems/add-digits/" target="_blank" rel="noopener">Add Digits</a> </p>
 <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">addDigits</span><span class="params">(<span class="keyword">int</span> num)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (num == <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> r = num % <span class="number">9</span>;</span><br><span class="line">        <span class="keyword">return</span> r == <span class="number">0</span> ? <span class="number">9</span> : r ;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 

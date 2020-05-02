@@ -28,7 +28,7 @@
 <meta property="og:description" content="一个bug引起的最近北京那边同事碰到了一个问题，找到我时说是已经搞了四五天， 说是软件发布在即十分紧急啥的。 出问题的代码大概是这个样子： 123456#define SERVER_NAME &quot;www.foo.com&quot;void main() &amp;#123;  ...  gethostbyname(SERVER_NAME);&amp;#125;  这段代码就是要通过DNS查找主句IP地址，如果成功的话会有一个">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2016-06-27T05:23:15.000Z">
-<meta property="article:modified_time" content="2016-06-27T06:54:07.922Z">
+<meta property="article:modified_time" content="2020-05-02T00:24:54.363Z">
 <meta property="article:author" content="Moonkin">
 <meta name="twitter:card" content="summary">
 
@@ -188,10 +188,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2016-06-27 13:23:15 / 修改时间：14:54:07" itemprop="dateCreated datePublished" datetime="2016-06-27T13:23:15+08:00">2016-06-27</time>
+              <time title="创建时间：2016-06-27 13:23:15" itemprop="dateCreated datePublished" datetime="2016-06-27T13:23:15+08:00">2016-06-27</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-05-02 08:24:54" itemprop="dateModified" datetime="2020-05-02T08:24:54+08:00">2020-05-02</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -202,7 +208,21 @@
                 </span>
             </span>
 
-          
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.1k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
 
         </div>
       </header>
@@ -217,6 +237,7 @@
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> SERVER_NAME <span class="meta-string">"www.foo.com"</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  ...</span><br><span class="line">  gethostbyname(SERVER_NAME);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>这段代码就是要通过DNS查找主句IP地址，如果成功的话会有一个callback。 问题是一直都无法正确的获得IP地址。</p>
+<a id="more"></a>
 <h2 id="const-和指针的一些说明"><a href="#const-和指针的一些说明" class="headerlink" title="const 和指针的一些说明"></a>const 和指针的一些说明</h2><p>一个很流行的面试题就是const int * p 和 int * const p的区别。 其实const int * 和 int const * 是一样的， 就是一个指向const int的指针。 而 int * const p表示一个指向int的const 指针。</p>
 <p>那么问题来了，有人会问可以通过指针来修改const 变量的值吗？</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">const</span> <span class="keyword">int</span> a = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">int</span> * p = (<span class="keyword">int</span> *)&amp;a;</span><br><span class="line">	*p = <span class="number">2</span>;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d %d\n"</span>, a, *p);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -374,6 +395,16 @@
     <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Moonkin</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">12k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">11 分钟</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
   </div>
