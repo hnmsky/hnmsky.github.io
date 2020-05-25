@@ -96,7 +96,7 @@
     
     <summary type="html">
     
-      &lt;p&gt;&lt;em&gt;本文例子大多出自GCC的文档 &lt;a href=&quot;https://gcc.gnu.org/onlinedocs/cpp/Macros.html&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;GCC Macro Doc&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+      &lt;p&gt;&lt;em&gt;本文例子大多出自GCC的文档 &lt;a href=&quot;https://gcc.gnu.org/onlinedocs/cpp/Macros.html&quot; target=&quot;_blank&quot; rel=&quot;noopener external nofollow noreferrer&quot;&gt;GCC Macro Doc&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
 &lt;h2 id=&quot;Object-like-Macros&quot;&gt;&lt;a href=&quot;#Object-like-Macros&quot; class=&quot;headerlink&quot; title=&quot;Object-like Macros&quot;&gt;&lt;/a&gt;Object-like Macros&lt;/h2&gt;&lt;p&gt;Object-like marco 只会在使用时才会完全展开。&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;#define TABLESIZE BUFSIZE
 #define BUFSIZE 1024
@@ -129,7 +129,7 @@ TABLESIZE
     <summary type="html">
     
       &lt;p&gt;最近在刷leetcode,topcoder上的题目，决定写一些笔记，加深一下印象吧。顺序就是从简单的开始。&lt;/p&gt;
-&lt;p&gt;&lt;a href=&quot;https://leetcode.com/problems/nim-game/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Nim Game&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://leetcode.com/problems/nim-game/&quot; target=&quot;_blank&quot; rel=&quot;noopener external nofollow noreferrer&quot;&gt;Nim Game&lt;/a&gt;&lt;/p&gt;
 &lt;figure class=&quot;highlight cpp&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;Solution&lt;/span&gt; &amp;#123;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;public&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;bool&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;canWinNim&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(&lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; n)&lt;/span&gt; &lt;/span&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; (n % &lt;span class=&quot;number&quot;&gt;4&lt;/span&gt; == &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;literal&quot;&gt;false&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;literal&quot;&gt;true&lt;/span&gt;;  &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
 &lt;p&gt;在n=1,2,3时会赢，n=4时会输。 但n&amp;gt;4时，都可以转化为n&amp;lt;=4的情况，所以取模即可。&lt;/p&gt;
     
