@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>BLE5.0学习--Connection Parameter Update Procedure</title>
+    <url>/2020/05/31/BLE-update-para/</url>
+    <content><![CDATA[]]></content>
+      <tags>
+        <tag>BLE</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>C数组和指针相关的问题</title>
     <url>/2016/06/03/C%E6%95%B0%E7%BB%84%E5%92%8C%E6%8C%87%E9%92%88%E7%9B%B8%E5%85%B3%E7%9A%84%E9%97%AE%E9%A2%98/</url>
     <content><![CDATA[<h2 id="两个面试题"><a href="#两个面试题" class="headerlink" title="两个面试题"></a>两个面试题</h2><p>面试时发现很多公司喜欢考一些数组和指针相关的问题。比较常见的是下面这个：  </p>
