@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://hnmsky.github.io/"/>
-  <updated>2020-05-24T14:45:22.715Z</updated>
+  <updated>2020-06-15T14:47:53.687Z</updated>
   <id>http://hnmsky.github.io/</id>
   
   <author>
@@ -15,6 +15,30 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>BLE5.0学习--Connection Parameter Update Procedure</title>
+    <link href="http://hnmsky.github.io/2020/05/31/BLE-update-para/"/>
+    <id>http://hnmsky.github.io/2020/05/31/BLE-update-para/</id>
+    <published>2020-05-31T14:40:25.000Z</published>
+    <updated>2020-06-15T14:47:53.687Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Connection Parameter Update Procedure 是一个 GAP 的 Procedure，允许 Central 或者 Peripheral 在连接后是可以更新连接参数。一般原厂会提供相关 GAP 的 API， 例如我司的 API 就是&lt;/p&gt;
+&lt;figure class=&quot;highlight c&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;inb_conn_param_update&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(&lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; conidx, &lt;span class=&quot;keyword&quot;&gt;inb_conn_param_update_t&lt;/span&gt; *p_upd)&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;而GAP下面的layer如果实现，则是分为3种情况：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;Central 要更新连接参数，但 Central 或 Peripheral 有一个不支持 Connection Parameters Request Procedure，则 Central 用 Link Layer 的 Connection Update procedure 来更新参数。Master 发送 LL_CONECTION_UPDATE_IND 来更新连接参数。&lt;/p&gt;
+    
+    </summary>
+    
+    
+    
+      <category term="BLE" scheme="http://hnmsky.github.io/tags/BLE/"/>
+    
+  </entry>
   
   <entry>
     <title>一个对齐的问题</title>
