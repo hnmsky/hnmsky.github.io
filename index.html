@@ -154,7 +154,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-count">6</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -239,7 +239,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-04-23 12:46:45" itemprop="dateModified" datetime="2022-04-23T12:46:45+08:00">2022-04-23</time>
+      <time title="修改时间：2022-04-23 19:15:52" itemprop="dateModified" datetime="2022-04-23T19:15:52+08:00">2022-04-23</time>
     </span>
 
   
@@ -253,7 +253,8 @@
     
     <div class="post-body" itemprop="articleBody">
           <h3 id="建立连接"><a href="#建立连接" class="headerlink" title="建立连接"></a>建立连接</h3><p>BLE中必须是 Master 发起连接请求，过程如下：</p>
-<p><img src="https://raw.githubusercontent.com/hnmsky/hnmsky.github.io/master/picgo/20200628222842.png" alt="image-20200628222818210"></p>
+<img src="/2020/06/16/LL-connect/20200628222842.png" class="" title="image-20200628222818210">
+
 <p>Master 收到广播后发送 CONNECT_IND, 然后连接就建立完成。后面就是开始发送数据包。</p>
           <!--noindex-->
             <div class="post-button">
@@ -324,7 +325,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-04-23 12:45:33" itemprop="dateModified" datetime="2022-04-23T12:45:33+08:00">2022-04-23</time>
+      <time title="修改时间：2022-04-23 19:17:36" itemprop="dateModified" datetime="2022-04-23T19:17:36+08:00">2022-04-23</time>
     </span>
 
   
@@ -404,9 +405,15 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2020-05-24 22:05:26 / 修改时间：22:45:22" itemprop="dateCreated datePublished" datetime="2020-05-24T22:05:26+08:00">2020-05-24</time>
+      <time title="创建时间：2020-05-24 22:05:26" itemprop="dateCreated datePublished" datetime="2020-05-24T22:05:26+08:00">2020-05-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-04-23 19:17:57" itemprop="dateModified" datetime="2022-04-23T19:17:57+08:00">2022-04-23</time>
     </span>
 
   
@@ -421,7 +428,7 @@
     <div class="post-body" itemprop="articleBody">
           <p>最近碰到一个问题，有个程序是跑在ARM cortex M4上。 之前用-O0编译的时候运行一切正常， 但用-O3编译就会有unaligned的UsageFault。但因为空间的问题又必须用-O3编译。</p>
 <h2 id="问题的原因"><a href="#问题的原因" class="headerlink" title="问题的原因"></a>问题的原因</h2><p>跟踪调试了一些，出问题的是下面的代码：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">uint32_t</span> *txb = (<span class="type">uint32_t</span>*)buf;</span><br><span class="line"><span class="keyword">while</span> (len) &#123;</span><br><span class="line">	<span class="type">uint32_t</span> data = *txb++;<span class="comment">//UsageFault</span></span><br><span class="line">    reg_write(addr, data);</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">uint32_t</span> *txb = (<span class="type">uint32_t</span>*)buf;</span><br><span class="line"><span class="keyword">while</span> (len) &#123;</span><br><span class="line">    <span class="type">uint32_t</span> data = *txb++;<span class="comment">//UsageFault</span></span><br><span class="line">    reg_write(addr, data);</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2020/05/24/align/#more" rel="contents">
@@ -491,7 +498,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2020-05-02 08:24:54" itemprop="dateModified" datetime="2020-05-02T08:24:54+08:00">2020-05-02</time>
+      <time title="修改时间：2022-04-23 19:18:08" itemprop="dateModified" datetime="2022-04-23T19:18:08+08:00">2022-04-23</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -618,111 +625,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2016/06/03/C%E6%95%B0%E7%BB%84%E5%92%8C%E6%8C%87%E9%92%88%E7%9B%B8%E5%85%B3%E7%9A%84%E9%97%AE%E9%A2%98/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2016/03/04/C%E8%AF%AD%E8%A8%80%E5%AE%8F%E7%9A%84%E4%B8%80%E4%BA%9B%E8%AF%B4%E6%98%8E%20C%20macro/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Moonkin">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Moonkin的小屋">
-      <meta itemprop="description" content="学习笔记和碎碎念">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Moonkin的小屋">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2016/03/04/C%E8%AF%AD%E8%A8%80%E5%AE%8F%E7%9A%84%E4%B8%80%E4%BA%9B%E8%AF%B4%E6%98%8E%20C%20macro/" class="post-title-link" itemprop="url">C语言宏的一些说明 C macro</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2016-03-04 11:50:10" itemprop="dateCreated datePublished" datetime="2016-03-04T11:50:10+08:00">2016-03-04</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2020-05-02 08:24:39" itemprop="dateModified" datetime="2020-05-02T08:24:39+08:00">2020-05-02</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/code/" itemprop="url" rel="index"><span itemprop="name">code</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p><em>本文例子大多出自GCC的文档 <a target="_blank" rel="noopener" href="https://gcc.gnu.org/onlinedocs/cpp/Macros.html">GCC Macro Doc</a></em></p>
-<h2 id="Object-like-Macros"><a href="#Object-like-Macros" class="headerlink" title="Object-like Macros"></a>Object-like Macros</h2><p>Object-like marco 只会在使用时才会完全展开。</p>
-<pre><code>#define TABLESIZE BUFSIZE
-#define BUFSIZE 1024
-TABLESIZE
-  ==&gt; BUFSIZE
-  ==&gt; 1024
-</code></pre>
-<p>##Function-like Macros</p>
-<p>function-like macro 只会在后面有 () 才会展开。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">extern</span> <span class="type">void</span> <span class="title function_">foo</span><span class="params">(<span class="type">void</span>)</span>;</span><br><span class="line"><span class="meta">#<span class="keyword">define</span> foo() <span class="comment">/* optimized inline version */</span></span></span><br><span class="line">foo();</span><br><span class="line">funcptr = foo;</span><br></pre></td></tr></table></figure>
-
-<p>注意如果定义了宏 foo(), 而又想定义foo函数，可以采用下面的做法。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> foo() <span class="comment">//inline function here</span></span></span><br><span class="line"><span class="type">void</span> (foo)()</span><br><span class="line">&#123;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2016/03/04/C%E8%AF%AD%E8%A8%80%E5%AE%8F%E7%9A%84%E4%B8%80%E4%BA%9B%E8%AF%B4%E6%98%8E%20C%20macro/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -900,7 +802,7 @@ TABLESIZE
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
 
-<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hnmsky","repo":"gitalk","client_id":"317f1f805722049c78d2","client_secret":"a6aaa6e38f25471df88bacc9e34a7c149394eb3d","admin_user":"hnmsky","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"en|zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"6666cd76f96956469e7be39d750cc7d9"}</script>
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hnmsky","repo":"hnmsky.github.io","client_id":"317f1f805722049c78d2","client_secret":"a6aaa6e38f25471df88bacc9e34a7c149394eb3d","admin_user":"hnmsky","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"en|zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"6666cd76f96956469e7be39d750cc7d9"}</script>
 <script src="/js/third-party/comments/gitalk.js"></script>
 
 </body>

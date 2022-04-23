@@ -27,17 +27,17 @@
 <meta property="og:site_name" content="Moonkin的小屋">
 <meta property="og:description" content="Connection Parameter Update Procedure 是一个 GAP 的 Procedure，允许 Central 或者 Peripheral 在连接后是可以更新连接参数。一般原厂会提供相关 GAP 的 API， 例如我司的 API 就是 1int inb_conn_param_update(int conidx, inb_conn_param_update_t *p_upd">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://raw.githubusercontent.com/hnmsky/hnmsky.github.io/master/picgo/20200614211208.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hnmsky/hnmsky.github.io/master/picgo/20200615081249.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hnmsky/hnmsky.github.io/master/picgo/20200615081314.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hnmsky/hnmsky.github.io/master/picgo/20200615224116.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hnmsky/hnmsky.github.io/master/picgo/20200615224123.png">
+<meta property="og:image" content="http://example.com/2020/05/31/BLE-update-para/20200614211208.png">
+<meta property="og:image" content="http://example.com/2020/05/31/BLE-update-para/20200615081249.png">
+<meta property="og:image" content="http://example.com/2020/05/31/BLE-update-para/20200615081314.png">
+<meta property="og:image" content="http://example.com/2020/05/31/BLE-update-para/20200615224116.png">
+<meta property="og:image" content="http://example.com/2020/05/31/BLE-update-para/20200615224123.png">
 <meta property="article:published_time" content="2020-05-31T14:40:25.000Z">
-<meta property="article:modified_time" content="2022-04-23T04:45:33.580Z">
+<meta property="article:modified_time" content="2022-04-23T11:17:36.962Z">
 <meta property="article:author" content="Moonkin">
 <meta property="article:tag" content="BLE">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/hnmsky/hnmsky.github.io/master/picgo/20200614211208.png">
+<meta name="twitter:image" content="http://example.com/2020/05/31/BLE-update-para/20200614211208.png">
 
 
 <link rel="canonical" href="http://example.com/2020/05/31/BLE-update-para/">
@@ -163,7 +163,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-count">6</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -249,7 +249,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-04-23 12:45:33" itemprop="dateModified" datetime="2022-04-23T12:45:33+08:00">2022-04-23</time>
+      <time title="修改时间：2022-04-23 19:17:36" itemprop="dateModified" datetime="2022-04-23T19:17:36+08:00">2022-04-23</time>
     </span>
 
   
@@ -277,20 +277,24 @@
 <li><p>Central 要更新连接参数，但 Central 或 Peripheral 有一个不支持 Connection Parameters Request Procedure，则 Central 用 Link Layer 的 Connection Update procedure 来更新参数。Master 发送 LL_CONECTION_UPDATE_IND 来更新连接参数。</p>
 <span id="more"></span>
 
-<p><img src="https://raw.githubusercontent.com/hnmsky/hnmsky.github.io/master/picgo/20200614211208.png" alt="image-20200614211137999"></p>
+<img src="/2020/05/31/BLE-update-para/20200614211208.png" class="" title="image-20200614211137999">
 </li>
 <li><p>Peripheral 要更新连接参数，但有两个连接的设备有一个不支持 Connection Parameters Request Procedure ,就需要用 L2CAP 的CONNECTION PARAMETER UPDATE REQUEST 命令，master 会发送 CONNECTION PARAMETER UPDATE RESPONSE 返回结果。如果更新成功，Slave 的 Host 会收到 Controller 的通知。</p>
 </li>
 </ol>
-<p><img src="https://raw.githubusercontent.com/hnmsky/hnmsky.github.io/master/picgo/20200615081249.png" alt="image-20200615081240798"></p>
+<img src="/2020/05/31/BLE-update-para/20200615081249.png" class="" title="image-20200615081240798">
+
 <p>CONNECTION PARAMETER UPDATE REQUEST</p>
-<p><img src="https://raw.githubusercontent.com/hnmsky/hnmsky.github.io/master/picgo/20200615081314.png" alt="image-20200615081312577"></p>
+<img src="/2020/05/31/BLE-update-para/20200615081314.png" class="" title="image-20200615081312577">
+
 <p>CONNECTION PARAMETER UPDATE RESPONSE</p>
 <ol start="3">
 <li>如果 Central 和 Peripheral 都支持 Connection Parameters Request Procedure, 则用 Connection Parameters Request Procedure 来更新连接参数。下面分别是 Master 和 Slave 发起请求的过程：</li>
 </ol>
-<p><img src="https://raw.githubusercontent.com/hnmsky/hnmsky.github.io/master/picgo/20200615224116.png" alt="image-20200615223913683"></p>
-<p><img src="https://raw.githubusercontent.com/hnmsky/hnmsky.github.io/master/picgo/20200615224123.png" alt="image-20200615223708591"></p>
+<img src="/2020/05/31/BLE-update-para/20200615224116.png" class="" title="image-20200615223913683">
+
+<img src="/2020/05/31/BLE-update-para/20200615224123.png" class="" title="image-20200615223708591">
+
 <p><em>参考文献：</em></p>
 <p><em>Bluetooth Core Specification v 5.0</em></p>
 
@@ -388,7 +392,7 @@
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
 
-<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hnmsky","repo":"gitalk","client_id":"317f1f805722049c78d2","client_secret":"a6aaa6e38f25471df88bacc9e34a7c149394eb3d","admin_user":"hnmsky","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"en|zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"fb9a0b2e8ee8a0ba3bb075cb527292f1"}</script>
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hnmsky","repo":"hnmsky.github.io","client_id":"317f1f805722049c78d2","client_secret":"a6aaa6e38f25471df88bacc9e34a7c149394eb3d","admin_user":"hnmsky","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"en|zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"fb9a0b2e8ee8a0ba3bb075cb527292f1"}</script>
 <script src="/js/third-party/comments/gitalk.js"></script>
 
 </body>

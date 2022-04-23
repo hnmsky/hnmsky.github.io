@@ -28,7 +28,7 @@
 <meta property="og:description" content="一个bug引起的最近北京那边同事碰到了一个问题，找到我时说是已经搞了四五天， 说是软件发布在即十分紧急啥的。 出问题的代码大概是这个样子： 123456#define SERVER_NAME &quot;www.foo.com&quot;void main() &amp;#123;  ...  gethostbyname(SERVER_NAME);&amp;#125;  这段代码就是要通过DNS查找主句IP地址，">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2016-06-27T05:23:15.000Z">
-<meta property="article:modified_time" content="2020-05-02T00:24:54.363Z">
+<meta property="article:modified_time" content="2022-04-23T11:18:08.305Z">
 <meta property="article:author" content="Moonkin">
 <meta name="twitter:card" content="summary">
 
@@ -157,7 +157,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-count">6</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -243,7 +243,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2020-05-02 08:24:54" itemprop="dateModified" datetime="2020-05-02T08:24:54+08:00">2020-05-02</time>
+      <time title="修改时间：2022-04-23 19:18:08" itemprop="dateModified" datetime="2022-04-23T19:18:08+08:00">2022-04-23</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -277,9 +277,10 @@
 
 <p>这段代码就是要通过DNS查找主句IP地址，如果成功的话会有一个callback。 问题是一直都无法正确的获得IP地址。</p>
 <span id="more"></span>
+
 <h2 id="const-和指针的一些说明"><a href="#const-和指针的一些说明" class="headerlink" title="const 和指针的一些说明"></a>const 和指针的一些说明</h2><p>一个很流行的面试题就是const int * p 和 int * const p的区别。 其实const int * 和 int const * 是一样的， 就是一个指向const int的指针。 而 int * const p表示一个指向int的const 指针。</p>
 <p>那么问题来了，有人会问可以通过指针来修改const 变量的值吗？</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">	<span class="type">const</span> <span class="type">int</span> a = <span class="number">1</span>;</span><br><span class="line">	<span class="type">int</span> * p = (<span class="type">int</span> *)&amp;a;</span><br><span class="line">	*p = <span class="number">2</span>;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%d %d\n&quot;</span>, a, *p);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">const</span> <span class="type">int</span> a = <span class="number">1</span>;</span><br><span class="line">    <span class="type">int</span> * p = (<span class="type">int</span> *)&amp;a;</span><br><span class="line">    *p = <span class="number">2</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d %d\n&quot;</span>, a, *p);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>上面的代码将没有用const int * 的指针， 而是用int * 的指针来强制改变a的值。 这段代码的结果是什么呢？ 其实这个要看编译器。</p>
 <p>对于gcc 结果会是</p>
@@ -295,9 +296,7 @@
 <h2 id="问题的原因"><a href="#问题的原因" class="headerlink" title="问题的原因"></a>问题的原因</h2><p>对于开始提到的那个bug， SERVER_NAME其实是一个字符串的指针，并且是在只读区，而我同事封装的这个函数gethostbyname()的参数需要是一个可读写的地址（因为一些底层硬件上的原因）。</p>
 <p>而偏偏这个程序所在的平台，虽然不可以通过指针去修改全局const变量 ，但程序不会crash。 所以同事可能没有去考虑这方面的问题。</p>
 <p>改成这样就一切正常了。 虽然不同编译器的行为有些不同， 但编程时最好不要通过指针去修改const的变量 。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line"> <span class="type">char</span> server_name[] = <span class="string">&quot;www.foo.com&quot;</span>;</span><br><span class="line"> ...</span><br><span class="line">  gethostbyname(server_name);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line"> <span class="type">char</span> server_name[] = <span class="string">&quot;www.foo.com&quot;</span>;</span><br><span class="line"> ...</span><br><span class="line">  gethostbyname(server_name);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
     </div>
 
@@ -390,7 +389,7 @@
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
 
-<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hnmsky","repo":"gitalk","client_id":"317f1f805722049c78d2","client_secret":"a6aaa6e38f25471df88bacc9e34a7c149394eb3d","admin_user":"hnmsky","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"en|zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"4d92d4e4be888bc601ef1a04fa7da80b"}</script>
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hnmsky","repo":"hnmsky.github.io","client_id":"317f1f805722049c78d2","client_secret":"a6aaa6e38f25471df88bacc9e34a7c149394eb3d","admin_user":"hnmsky","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"en|zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"4d92d4e4be888bc601ef1a04fa7da80b"}</script>
 <script src="/js/third-party/comments/gitalk.js"></script>
 
 </body>
