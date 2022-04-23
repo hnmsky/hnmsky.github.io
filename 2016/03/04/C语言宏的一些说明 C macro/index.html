@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.11.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="本文例子大多出自GCC的文档 GCC Macro Doc Object-like MacrosObject-like marco 只会在使用时才会完全展开。 #define TABLESIZE BUFSIZE #define BUFSIZE 1024 TABLESIZE   &#x3D;&#x3D;&gt; BUFSIZE   &#x3D;&#x3D;&gt; 1024  ##Function-like Macros function-">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C语言宏的一些说明 C macro">
+<meta property="og:url" content="http://example.com/2016/03/04/C%E8%AF%AD%E8%A8%80%E5%AE%8F%E7%9A%84%E4%B8%80%E4%BA%9B%E8%AF%B4%E6%98%8E%20C%20macro/">
+<meta property="og:site_name" content="Moonkin的小屋">
+<meta property="og:description" content="本文例子大多出自GCC的文档 GCC Macro Doc Object-like MacrosObject-like marco 只会在使用时才会完全展开。 #define TABLESIZE BUFSIZE #define BUFSIZE 1024 TABLESIZE   &#x3D;&#x3D;&gt; BUFSIZE   &#x3D;&#x3D;&gt; 1024  ##Function-like Macros function-">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2016-03-04T03:50:10.000Z">
+<meta property="article:modified_time" content="2020-05-02T00:24:39.441Z">
+<meta property="article:author" content="Moonkin">
+<meta property="article:tag" content="C">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2016/03/04/C%E8%AF%AD%E8%A8%80%E5%AE%8F%E7%9A%84%E4%B8%80%E4%BA%9B%E8%AF%B4%E6%98%8E%20C%20macro/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2016/03/04/C%E8%AF%AD%E8%A8%80%E5%AE%8F%E7%9A%84%E4%B8%80%E4%BA%9B%E8%AF%B4%E6%98%8E%20C%20macro/","path":"2016/03/04/C语言宏的一些说明 C macro/","title":"C语言宏的一些说明 C macro"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>C语言宏的一些说明 C macro | Moonkin的小屋</title>
+  
+
+  <script src="/js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?bf9041624608109e9b7f6398f2335d9e"></script>
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Moonkin的小屋</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Object-like-Macros"><span class="nav-number">1.</span> <span class="nav-text">Object-like Macros</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%8C%96%EF%BC%88stringification%EF%BC%89"><span class="nav-number">2.</span> <span class="nav-text">字符串化（stringification）</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Moonkin</p>
+  <div class="site-description" itemprop="description">学习笔记和碎碎念</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2016/03/04/C%E8%AF%AD%E8%A8%80%E5%AE%8F%E7%9A%84%E4%B8%80%E4%BA%9B%E8%AF%B4%E6%98%8E%20C%20macro/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Moonkin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Moonkin的小屋">
+      <meta itemprop="description" content="学习笔记和碎碎念">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="C语言宏的一些说明 C macro | Moonkin的小屋">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          C语言宏的一些说明 C macro
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2016-03-04 11:50:10" itemprop="dateCreated datePublished" datetime="2016-03-04T11:50:10+08:00">2016-03-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2020-05-02 08:24:39" itemprop="dateModified" datetime="2020-05-02T08:24:39+08:00">2020-05-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/code/" itemprop="url" rel="index"><span itemprop="name">code</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p><em>本文例子大多出自GCC的文档 <a target="_blank" rel="noopener" href="https://gcc.gnu.org/onlinedocs/cpp/Macros.html">GCC Macro Doc</a></em></p>
+<h2 id="Object-like-Macros"><a href="#Object-like-Macros" class="headerlink" title="Object-like Macros"></a>Object-like Macros</h2><p>Object-like marco 只会在使用时才会完全展开。</p>
+<pre><code>#define TABLESIZE BUFSIZE
+#define BUFSIZE 1024
+TABLESIZE
+  ==&gt; BUFSIZE
+  ==&gt; 1024
+</code></pre>
+<p>##Function-like Macros</p>
+<p>function-like macro 只会在后面有 () 才会展开。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">extern</span> <span class="type">void</span> <span class="title function_">foo</span><span class="params">(<span class="type">void</span>)</span>;</span><br><span class="line"><span class="meta">#<span class="keyword">define</span> foo() <span class="comment">/* optimized inline version */</span></span></span><br><span class="line">foo();</span><br><span class="line">funcptr = foo;</span><br></pre></td></tr></table></figure>
+
+<p>注意如果定义了宏 foo(), 而又想定义foo函数，可以采用下面的做法。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> foo() <span class="comment">//inline function here</span></span></span><br><span class="line"><span class="type">void</span> (foo)()</span><br><span class="line">&#123;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<span id="more"></span>
+<p>加上()后就不会展开为宏了,在一些库中采用的就是这种方式。</p>
+<p>注意在定义function-like macro时， 宏的名字和()中间不能有空格,否则会被展开为下面这种形式。</p>
+<pre><code> #define foo ()    c_init()
+ foo()
+      ==&gt; () c_init()()
+</code></pre>
+<p>如果这样定义宏， 会传递2个参数 <em>array[x &#x3D; y</em> 和 <em>x + 1]</em> 给宏，注意这个表达式中间有逗号。</p>
+<pre><code> macro (array[x = y, x + 1])
+</code></pre>
+<p>如果想用 array[x &#x3D; y, x + 1] 作为参数，可以这样写 array[(x &#x3D; y, x + 1)]</p>
+<p>All arguments to a macro are completely macro-expanded before they are substituted into the macro body</p>
+<p>可以传递空的参数给宏，但是必须要有逗号。</p>
+<pre><code> #define min(a,b) ((a) &lt; (b) ? (a) : (b))
+ min(, b)        ==&gt; ((   ) &lt; (b) ? (   ) : (b))
+ min(a, )        ==&gt; ((a  ) &lt; ( ) ? (a  ) : ( ))
+ min(,)          ==&gt; ((   ) &lt; ( ) ? (   ) : ( ))
+ min((,),)       ==&gt; (((,)) &lt; ( ) ? ((,)) : ( ))
+ 
+ min()      error--&gt; macro &quot;min&quot; requires 2 arguments, but only 1 given
+ min(,,)    error--&gt; macro &quot;min&quot; passed 3 arguments, but takes just 2
+</code></pre>
+<p>宏的参数如果是在字符串中，则不会被替换。</p>
+<pre><code> #define foo(x) x, &quot;x&quot;
+ foo(bar)        ==&gt; bar, &quot;x&quot;
+</code></pre>
+<h2 id="字符串化（stringification）"><a href="#字符串化（stringification）" class="headerlink" title="字符串化（stringification）"></a>字符串化（stringification）</h2><p>用#可以将参数字符串化，<br>可以看到参数 <em>x &#x3D;&#x3D; 0</em> 没有被展开， 而是变成 “x &#x3D;&#x3D; 0”</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> WARN_IF(EXP) \</span></span><br><span class="line"><span class="meta"> do &#123; <span class="keyword">if</span> (EXP) \</span></span><br><span class="line"><span class="meta">         fprintf (stderr, <span class="string">&quot;Warning: &quot;</span> #EXP <span class="string">&quot;\n&quot;</span>); &#125; \</span></span><br><span class="line"><span class="meta"> while (0)</span></span><br><span class="line"> WARN_IF (x == <span class="number">0</span>);</span><br><span class="line">      ==&gt; <span class="keyword">do</span> &#123; <span class="keyword">if</span> (x == <span class="number">0</span>)</span><br><span class="line">            <span class="built_in">fprintf</span> (<span class="built_in">stderr</span>, <span class="string">&quot;Warning: &quot;</span> <span class="string">&quot;x == 0&quot;</span> <span class="string">&quot;\n&quot;</span>); &#125; <span class="keyword">while</span> (<span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+
+<p>如果希望EXP被展开，需要用2层的宏， 可以看到在很多地方使用这个技巧。</p>
+<pre><code> #define xstr(s) str(s)
+ #define str(s) #s
+ #define foo 4
+ str (foo)
+      ==&gt; &quot;foo&quot;
+ xstr (foo)
+      ==&gt; xstr (4)
+      ==&gt; str (4)
+      ==&gt; &quot;4&quot;
+</code></pre>
+<p>这里s在xstr中被展开， 这样在str中就是已展开的s。</p>
+<p>Token pasting is most useful when one or both of the tokens comes from a macro argument. If either of the tokens next to an ‘##’ is a parameter name, it is replaced by its actual argument before ‘##’ executes. As with stringification, the actual argument is not macro-expanded first. If the argument is empty, that ‘##’ has no effect.</p>
+<p> #define eprintf(…) fprintf (stderr, <strong>VA_ARGS</strong>)<br>The variable argument is completely macro-expanded before it is inserted into the macro expansion, just like an ordinary argument. You may use the ‘#’ and ‘##’ operators to stringify the variable argument or to paste its leading or trailing token with another token. (But see below for an important special case for ‘##’.)</p>
+<p>If your macro is complicated, you may want a more descriptive name for the variable argument than <strong>VA_ARGS</strong>. CPP permits this, as an extension. You may write an argument name immediately before the ‘…’; that name is used for the variable argument. The eprintf macro above could be written<br>     #define eprintf(args…) fprintf (stderr, args)</p>
+<p>using this extension. You cannot use <strong>VA_ARGS</strong> and this extension in the same macro.</p>
+<p>GNU CPP has a pair of extensions which deal with this problem. First, you are allowed to leave the variable argument out entirely:<br>     eprintf (“success!\n”)<br>          &#x3D;&#x3D;&gt; fprintf(stderr, “success!\n”, );</p>
+<p>Second, the ‘##’ token paste operator has a special meaning when placed between a comma and a variable argument. If you write<br>     #define eprintf(format, …) fprintf (stderr, format, ##<strong>VA_ARGS</strong>)</p>
+<p>and the variable argument is left out when the eprintf macro is used, then the comma before the ‘##’ will be deleted. This does not happen if you pass an empty argument, nor does it happen if the token preceding ‘##’ is anything other than a comma.<br>     eprintf (“success!\n”)<br>          &#x3D;&#x3D;&gt; fprintf(stderr, “success!\n”);</p>
+<p>revious versions of CPP implemented the comma-deletion extension much more generally. We have restricted it in this release to minimize the differences from C99. To get the same effect with both this and previous versions of GCC, the token preceding the special ‘##’ must be a comma, and there must be white space between that comma and whatever comes immediately before it:<br>     #define eprintf(format, args…) fprintf (stderr, format , ##args)</p>
+<p>However, if an identifier which is currently a macro is redefined, then the new definition must be effectively the same as the old one. Two macro definitions are effectively the same if:</p>
+<pre><code>* Both are the same type of macro (object- or function-like).
+* All the tokens of the replacement list are the same.
+* If there are any parameters, they are the same.
+* Whitespace appears in the same places in both. It need not be exactly the same amount of whitespace, though. Remember that comments count as whitespace.
+</code></pre>
+<p>The C language offers no standard way to do this, but it can be done with GNU extensions as follows:<br>     #define min(X, Y)                <br>     ({ typeof (X) x_ &#x3D; (X);          <br>        typeof (Y) y_ &#x3D; (Y);          <br>        (x_ &lt; y_) ? x_ : y_; })</p>
+<p>The ‘({ … })’ notation produces a compound statement that acts as an expression. Its value is the value of its last statement. This permits us to define local variables and assign each argument to one. The local variables have underscores after their names to reduce the risk of conflict with an identifier of wider scope (it is impossible to avoid this entirely). Now each argument is evaluated exactly once.</p>
+<p>If a macro x expands to use a macro y, and the expansion of y refers to the macro x, that is an indirect self-reference of x. x is not expanded in this case either. Thus, if we have<br>     #define x (4 + y)<br>     #define y (2 * x)</p>
+<p>then x and y expand as follows:<br>     x    &#x3D;&#x3D;&gt; (4 + y)<br>          &#x3D;&#x3D;&gt; (4 + (2 * x))</p>
+<pre><code> y    ==&gt; (2 * x)
+      ==&gt; (2 * (4 + y))
+</code></pre>
+<p>Each macro is expanded when it appears in the definition of the other macro, but not when it indirectly appears in its own definition.</p>
+<p>Argument Prescan<br>Macro arguments are completely macro-expanded before they are substituted into a macro body, unless they are stringified or pasted with other tokens. After substitution, the entire macro body, including the substituted arguments, is scanned again for macros to be expanded. The result is that the arguments are scanned twice to expand macro calls in them.</p>
+<p> #define AFTERX(x) X_ ## x<br>          #define XAFTERX(x) AFTERX(x)<br>          #define TABLESIZE 1024<br>          #define BUFSIZE TABLESIZE</p>
+<p>then AFTERX(BUFSIZE) expands to X_BUFSIZE, and XAFTERX(BUFSIZE) expands to X_1024. (Not to X_TABLESIZE. Prescan always does a complete expansion.)</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/C/" rel="tag"># C</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2016/03/04/leetcode%E9%A2%98%E8%A7%A3/" rel="prev" title="leetcode题解(一)">
+                  <i class="fa fa-chevron-left"></i> leetcode题解(一)
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2016/06/03/C%E6%95%B0%E7%BB%84%E5%92%8C%E6%8C%87%E9%92%88%E7%9B%B8%E5%85%B3%E7%9A%84%E9%97%AE%E9%A2%98/" rel="next" title="C数组和指针相关的问题">
+                  C数组和指针相关的问题 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Moonkin</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"hnmsky","repo":"gitalk","client_id":"317f1f805722049c78d2","client_secret":"a6aaa6e38f25471df88bacc9e34a7c149394eb3d","admin_user":"hnmsky","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"en|zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"12504d694928a74b4e5945e54db25af2"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>
